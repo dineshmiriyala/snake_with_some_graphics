@@ -10,8 +10,8 @@ class FOOD:
 
 
     def draw_food(self):
-        food_rect = pygame.Rect(self.position.x * pixel_size , self.position.y * pixel_size , pixel_size , pixel_size)
-        pygame.draw.rect(screen , (200 , 0 , 0) , food_rect)
+        food_rect = pygame.Rect(self.position.x * pixel_size , self.position.y * pixel_size , pixel_size  , pixel_size )
+        screen.blit(food_image , food_rect)
 
     def random(self):
         self.x = random.randint(0, pixels - 1)
@@ -60,8 +60,11 @@ class MAIN:
         self.error()
 
     def draw_elments(self):
-        game_init.food.draw_food()
-        game_init.snake.draw_snake()
+
+        self.draw_grass()
+        self.food.draw_food()
+        self.snake.draw_snake()
+        self.score()
 
     def snake_eat(self):
         if self.food.position == self.snake.body[0]:
@@ -79,11 +82,32 @@ class MAIN:
         pygame.quit()
         sys.exit()
 
+    def score(self):
+        text = score_font.render( str(len(self.snake.body) - 3), True, (56 , 74 , 12))
+        score_x = int(pixel_size*pixels - 60)
+        score_y = int(pixel_size * pixels - 60)
+        score_rect = text.get_rect(center = (score_x , score_y))
+        screen.blit(text , score_rect)
 
+    def draw_grass(self):
+        grass_color = (144, 238, 144)
+        for col in range(pixels):
+            if col % 2 == 0:
+                for row in range(pixels):
+                    if row % 2 == 0:
+                        grass_rect = pygame.Rect(row * pixel_size , col * pixel_size ,pixel_size , pixel_size)
+                        pygame.draw.rect(screen , grass_color , grass_rect)
+            else:
+                for row in range(pixels):
+                    if row % 2 != 0:
+                        grass_rect = pygame.Rect(row * pixel_size, col * pixel_size, pixel_size, pixel_size)
+                        pygame.draw.rect(screen, grass_color, grass_rect)
 
 
 
 pygame.init()
+score_font = pygame.font.SysFont('Ubuntu', 20)
+food_image = pygame.image.load('graphics/apple.png')
 
 pygame.display.set_caption('Snake game by Dinesh')
 pixel_size = 20
@@ -115,7 +139,7 @@ while True:
             if event.key == pygame.K_LEFT:
                 if game_init.snake.direction.x != 1:
                     game_init.snake.direction = Vector2(-1 , 0)
-    screen.fill(pygame.Color(0 , 126 , 0))
+    screen.fill(pygame.Color(152, 251, 152))
     game_init.draw_elments()
     pygame.display.update()
     clock.tick(144)
